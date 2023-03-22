@@ -67,4 +67,43 @@ function addNoteHandler(request, h) {
   return response;
 }
 
-module.exports = { addNoteHandler, getAllNotesHandler, getNoteByIdHandler };
+function editNoteByIdHandler(request, h) {
+  const { id } = request.params;
+  const { title, tags, body } = request.payload;
+  const updatedAt = new Date().toISOString();
+
+  const noteIndex = notes.findIndex((note) => note.id === id);
+
+  if (noteIndex !== -1) {
+    notes[noteIndex] = {
+      ...notes[noteIndex],
+      title,
+      tags,
+      body,
+      updatedAt,
+    };
+
+    const response = h.response({
+      status: 'success',
+      message: 'Note updated successfully',
+    });
+
+    console.log(notes);
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Failed to update note. Id not found',
+  });
+  response.code(404);
+  return response;
+}
+
+module.exports = {
+  addNoteHandler,
+  getAllNotesHandler,
+  getNoteByIdHandler,
+  editNoteByIdHandler,
+};
