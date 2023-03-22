@@ -1,8 +1,34 @@
 const { nanoid } = require('nanoid');
 const notes = require('./notes');
 
+function getAllNotesHandler() {
+  return {
+    status: 'success',
+    data: {
+      notes,
+    },
+  };
+}
+
+function getNoteByIdHandler(request, h) {
+  const { id } = request.params;
+
+  const note = notes.filter((n) => n.id === id)[0];
+
+  if (!note) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Note not found',
+    });
+    response.code(404);
+    return response;
+  }
+
+  return { status: 'success', data: { note } };
+}
+
 function addNoteHandler(request, h) {
-  const { title, tags, body } = JSON.parse(request.payload);
+  const { title, tags, body } = request.payload;
   const id = nanoid(16);
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
@@ -41,4 +67,4 @@ function addNoteHandler(request, h) {
   return response;
 }
 
-module.exports = { addNoteHandler };
+module.exports = { addNoteHandler, getAllNotesHandler, getNoteByIdHandler };
