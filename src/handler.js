@@ -101,9 +101,35 @@ function editNoteByIdHandler(request, h) {
   return response;
 }
 
+function deleteNoteByIdHandler(request, h) {
+  const { id } = request.params;
+
+  const noteIndex = notes.findIndex((note) => note.id === id);
+  console.log(request.params);
+
+  if (noteIndex !== -1) {
+    notes.splice(noteIndex, 1);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Note successfully deleted',
+    });
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Failed to delete note. Id not found',
+  });
+  response.code(404);
+  return response;
+}
+
 module.exports = {
   addNoteHandler,
   getAllNotesHandler,
   getNoteByIdHandler,
   editNoteByIdHandler,
+  deleteNoteByIdHandler,
 };
