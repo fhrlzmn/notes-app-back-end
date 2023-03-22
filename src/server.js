@@ -8,6 +8,13 @@ async function init() {
   const server = Hapi.server({
     port: PORT,
     host: HOST,
+
+    // to allow same-origin policy to all routes
+    routes: {
+      cors: {
+        origin: ['*'],
+      },
+    },
   });
 
   server.route(routes);
